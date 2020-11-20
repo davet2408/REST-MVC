@@ -38,7 +38,7 @@ public class CustomerController {
     public ResponseEntity<CustomerDTO> createNewCustomer(@RequestBody CustomerDTO customerDTO) {
         return new ResponseEntity<CustomerDTO>(
                 customerService.createNewCustomer(customerDTO),
-                HttpStatus.OK
+                HttpStatus.CREATED
         );
     }
 }
