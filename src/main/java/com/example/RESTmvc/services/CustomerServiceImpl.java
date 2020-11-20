@@ -2,6 +2,7 @@ package com.example.RESTmvc.services;
 
 import com.example.RESTmvc.api.v1.mapper.CustomerMapper;
 import com.example.RESTmvc.api.v1.model.CustomerDTO;
+import com.example.RESTmvc.domain.Customer;
 import com.example.RESTmvc.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,18 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO getCustomerById(Long id) {
         return customerMapper.customerToCustomerDTO(customerRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        CustomerDTO returnedCustomerDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+
+        returnedCustomerDTO.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+
+        return returnedCustomerDTO;
     }
 }
