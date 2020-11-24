@@ -2,6 +2,7 @@ package com.example.RESTmvc.services;
 
 import com.example.RESTmvc.api.v1.mapper.CustomerMapper;
 import com.example.RESTmvc.api.v1.model.CustomerDTO;
+import com.example.RESTmvc.controllers.v1.CustomerController;
 import com.example.RESTmvc.domain.Customer;
 import com.example.RESTmvc.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(customer -> {
                     CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-                    customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+                    customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
                 .collect(Collectors.toList());
@@ -48,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomerDTO returnedCustomerDTO = customerMapper.customerToCustomerDTO(savedCustomer);
 
-        returnedCustomerDTO.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+        returnedCustomerDTO.setCustomerUrl(getCustomerUrl(savedCustomer.getId()));
 
         return returnedCustomerDTO;
     }
@@ -75,9 +76,18 @@ public class CustomerServiceImpl implements CustomerService {
 
             CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
 
-            returnDTO.setCustomerUrl("/api/v1/customer/" + id);
+            returnDTO.setCustomerUrl(getCustomerUrl(id));
 
             return returnDTO;
         }).orElseThrow();
+    }
+
+    private String getCustomerUrl(Long id) {
+        return CustomerController.BASE_URL + "/" + id;
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
     }
 }
